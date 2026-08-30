@@ -1,0 +1,25 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.venv/
+venv/
+
+# Generated application data and models
+data/sample_receipts/*
+data/sample_statements/*
+!data/sample_receipts/.gitkeep
+!data/sample_statements/.gitkeep
+model/fine_tuned_bert/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

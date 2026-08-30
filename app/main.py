@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from werkzeug.utils import secure_filename
 import os
+from pathlib import Path
 import logging
 from datetime import datetime
 import pandas as pd
@@ -17,7 +18,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__, template_folder='../templates')
+BASE_DIR = Path(__file__).resolve().parents[1]
+RECEIPT_DIR = BASE_DIR / "data" / "sample_receipts"
+STATEMENT_DIR = BASE_DIR / "data" / "sample_statements"
+MODEL_DIR = BASE_DIR / "model" / "fine_tuned_bert"
+
+app = Flask(__name__, template_folder=str(BASE_DIR / "templates"))
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'csv'}
 
@@ -52,15 +58,18 @@ def categorize_transactions(df):
         return df
 
 def create_directories():
-    directories = ['../data/sample_receipts', '../data/sample_statements', '../model/fine_tuned_bert']
-    for directory in directories:
-        os.makedirs(directory, exist_ok=True)
+    for directory in (RECEIPT_DIR, STATEMENT_DIR, MODEL_DIR):
+        directory.mkdir(parents=True, exist_ok=True)
 
-@app.before_first_request
-def initialize():
-    create_directories()
-    initialize_db()
-    logger.info("Application initialized")
+
+@app.before_request
+def initialize_once():
+    """Initialize storage once per application process (Flask 3 compatible)."""
+    if not app.extensions.get("findoc_initialized"):
+        create_directories()
+        initialize_db()
+        app.extensions["findoc_initialized"] = True
+        logger.info("Application initialized")
 
 @app.route('/')
 def index():
@@ -284,7 +293,7 @@ def upload_receipt():
         filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_")
         filename = timestamp + filename
-        filepath = os.path.join("../data/sample_receipts", filename)
+        filepath = str(RECEIPT_DIR / filename)
         file.save(filepath)
 
         extracted_text = extract_text(filepath)
@@ -308,7 +317,7 @@ def upload_receipt():
             "filename": filename,
             "text": extracted_text,
             "predicted_category": predicted_category,
-            "confidence": "High"
+            "confidence": None
         })
     except Exception as e:
         logger.error(f"Error processing receipt: {str(e)}", exc_info=True)
@@ -328,7 +337,7 @@ def upload_statement():
         filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_")
         filename = timestamp + filename
-        filepath = os.path.join("../data/sample_statements", filename)
+        filepath = str(STATEMENT_DIR / filename)
         file.save(filepath)
 
         df = parse_csv(filepath) if filename.lower().endswith(".csv") else parse_pdf(filepath)

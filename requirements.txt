@@ -1,39 +1,24 @@
-# Core Framework
-flask==2.2.3
+# Web application
+flask>=3.0,<4
+werkzeug>=3.0,<4
+python-dotenv>=1.0,<2
 
-# Machine Learning & NLP
-tensorflow==2.10.0
-transformers==4.28.0
-keras==2.10.0
-numpy==1.26.4
+# Machine learning and NLP
+tensorflow>=2.15,<3
+tf-keras>=2.15,<3
+transformers>=4.38,<5
+numpy>=1.26,<3
+scikit-learn>=1.4,<2
 
-# Data Processing
-pandas==2.0.3
-tabula-py==2.5.0
-camelot-py==0.11.0
+# Data and document processing
+pandas>=2.0,<3
+pdfplumber>=0.11,<1
+pdf2image>=1.17,<2
+pytesseract>=0.3.13,<1
+opencv-python-headless>=4.9,<5
+pillow>=10,<12
+python-dateutil>=2.8,<3
+openpyxl>=3.1,<4
 
-# OCR & Image Processing
-easyocr==1.7.2
-opencv-python==4.8.0.76
-pillow==10.0.0
-
-# PDF Processing
-pdfminer.six==20201018
-PyPDF2==3.0.1
-
-# Database (Optional)
-psycopg2-binary==2.9.5
-
-# Visualization
-matplotlib==3.7.1
-
-# Web Security & File Handling
-werkzeug==2.2.3
-
-# Additional Utilities
-python-dateutil==2.8.2
-pytz==2023.3
-six==1.16.0
-
-# Development & Logging
-python-dotenv==1.0.0
+# Database
+psycopg2-binary>=2.9,<3

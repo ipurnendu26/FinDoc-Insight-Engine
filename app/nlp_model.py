@@ -590,9 +590,15 @@ class ExpenseClassifier:
             logger.error(f"Prediction failed: {e}")
             return "Others"
 
-# Global instance for backward compatibility
-classifier = ExpenseClassifier()
-predict_category = classifier.predict_category
+_classifier: Optional[ExpenseClassifier] = None
+
+
+def predict_category(text: str) -> str:
+    """Load the classifier on first use instead of training during module import."""
+    global _classifier
+    if _classifier is None:
+        _classifier = ExpenseClassifier()
+    return _classifier.predict_category(text)
 
 if __name__ == "__main__":
     # Configure logging
