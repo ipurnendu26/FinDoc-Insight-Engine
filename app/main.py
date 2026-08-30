@@ -321,7 +321,7 @@ def upload_receipt():
         })
     except Exception as e:
         logger.error(f"Error processing receipt: {str(e)}", exc_info=True)
-        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 @app.route('/upload_statement', methods=['POST'])
 def upload_statement():
@@ -390,4 +390,8 @@ def not_found(e): return jsonify({"error": "Endpoint not found"}), 404
 def internal_error(e): return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(
+        debug=os.getenv("FLASK_DEBUG", "false").lower() == "true",
+        host=os.getenv("HOST", "127.0.0.1"),
+        port=int(os.getenv("PORT", "5000")),
+    )
