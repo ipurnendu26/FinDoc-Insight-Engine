@@ -1,119 +1,121 @@
+# Financial Document Intelligence Engine
 
-# AI-Powered Financial Document Intelligence System
+An end-to-end application for extracting, normalizing, categorizing, storing, and analyzing information from receipts and financial statements.
 
-An end-to-end web application for extracting, classifying, and analyzing financial data from receipts and statements using advanced OCR and NLP techniques. This project provides a seamless workflow from document upload to insightful analytics, all in a modern, visually appealing dashboard.
+The project demonstrates how OCR, document parsing, NLP, relational storage, and interactive analytics can be combined into one auditable workflow.
 
----
+## Problem
 
-## 🚀 Features
+Financial records arrive in inconsistent formats: receipt images, PDFs, and CSV statements. Manual entry is slow and error-prone. This system converts those documents into normalized transaction records that can be searched, categorized, visualized, and exported.
 
-- **Receipt & Statement Upload:** Upload images (JPG, PNG) of receipts or PDF/CSV bank statements.
-- **OCR Extraction:** Uses Tesseract OCR for accurate text extraction from images.
-- **NLP Categorization:** Fine-tuned BERT model predicts expense categories from extracted text.
-- **Interactive Dashboard:** Visualize spending by category, merchant, date, and more with advanced filters.
-- **Advanced Filtering & Search:** Filter transactions by date, category, merchant, and source; search by keyword.
-- **Modern UI:** Responsive, mobile-friendly design with a vibrant color scheme and smooth user experience.
-- **Downloadable Reports:** Export recent transactions as CSV or Excel.
-- **Accessibility:** Accessible forms and navigation for all users.
+## Processing workflow
 
----
-
-## 🏗️ File & Folder Structure
-
+```text
+Receipt image / PDF / CSV
+    -> secure upload validation
+    -> OCR or statement parsing
+    -> field normalization
+    -> expense-category prediction
+    -> PostgreSQL persistence
+    -> filtering, analytics, and export
 ```
+
+## Capabilities
+
+- Receipt image, PDF statement, and CSV statement ingestion
+- OCR-based text extraction
+- Transaction date, merchant, amount, payment mode, and source normalization
+- BERT-based expense-category classification
+- PostgreSQL transaction persistence
+- Search and filters across dates, merchants, categories, and sources
+- Spending summaries and downloadable CSV/Excel reports
+- Flask-based application interface
+
+## Technology stack
+
+| Component | Technology |
+|---|---|
+| Web application | Flask |
+| OCR | EasyOCR, OpenCV |
+| NLP | BERT, Hugging Face Transformers, TensorFlow |
+| Data processing | Pandas |
+| PDF and statement parsing | pdfminer, PyPDF2, Camelot, Tabula |
+| Database | PostgreSQL, psycopg2 |
+| Visualization | Matplotlib and application templates |
+
+## Repository structure
+
+```text
+.
 ├── app/
-│   ├── main.py              # Flask backend: API endpoints, routing, and app logic
-│   ├── ocr_engine.py        # OCR logic using pytesseract
-│   ├── nlp_model.py         # BERT-based classifier for expense categorization
-│   ├── db_handler.py        # PostgreSQL database operations
-│   ├── statement_parser.py  # PDF/CSV parsing and transaction extraction
-│   └── templates/
-│       ├── dashboard.html   # Dashboard UI (charts, filters, tables)
-│       └── upload.html      # Upload UI (receipts/statements)
-├── model/
-│   └── fine_tuned_bert/     # Trained BERT model files (config, tokenizer, weights)
-├── data/
-│   ├── sample_receipts/     # Example receipt images for testing
-│   └── sample_statements/   # Example statements (CSV)
-├── requirements.txt         # Python dependencies
-├── README.md                # Project documentation
+│   ├── main.py
+│   ├── ocr_engine.py
+│   ├── statement_parser.py
+│   ├── nlp_model.py
+│   └── db_handler.py
+├── templates/
+├── requirements.txt
+└── README.md
 ```
 
-### File/Folder Descriptions
+## Local setup
 
-- **app/main.py**: Entry point for the Flask app; handles routing, API endpoints, and integration of all modules.
-- **app/ocr_engine.py**: Contains functions for extracting text from images using Tesseract OCR.
-- **app/nlp_model.py**: Loads and uses a fine-tuned BERT model to predict categories for transactions.
-- **app/db_handler.py**: Manages database connections and CRUD operations for transactions.
-- **app/statement_parser.py**: Parses PDF/CSV statements, extracts transactions, and applies OCR if needed.
-- **app/templates/**: HTML templates for the dashboard and upload pages, styled with Bootstrap and custom CSS.
-- **model/fine_tuned_bert/**: Directory for the trained BERT model, tokenizer, and config files.
-- **data/sample_receipts/**: Example receipt images for testing OCR and upload features.
-- **data/sample_statements/**: Example CSV statements for testing statement parsing.
-- **requirements.txt**: Lists all Python dependencies required to run the project.
-- **README.md**: This documentation file.
+```bash
+python -m venv .venv
+source .venv/bin/activate        # macOS/Linux
+# .venv\Scripts\Activate.ps1   # Windows PowerShell
+pip install -r requirements.txt
+cp .env.example .env
+```
 
----
+Create the PostgreSQL database, update the environment variables in `.env`, and run:
 
-## ⚡ Quick Start
+```bash
+python app/main.py
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd AI-Powered-Financial-Document-Intelligence-System
-   ```
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. **Run the app**
-   ```bash
-   python app/main.py
-   ```
-4. **Access the app**
-   Open your browser at [http://localhost:5000](http://localhost:5000)
+Database credentials are read from environment variables and should never be committed.
 
----
+## Model transparency
 
-## 📊 Usage
+The current repository creates a balanced category-training corpus from curated example transaction descriptions. This is useful for demonstrating the fine-tuning workflow, but it is not a substitute for evaluation on independently collected, human-labeled financial transactions.
 
-1. **Upload a receipt or statement** via the Upload page.
-2. **View extracted data and predicted categories** instantly after upload.
-3. **Explore the Dashboard** for interactive charts, filters, and recent transactions.
-4. **Export your data** as CSV/Excel for further analysis.
+A production-quality evaluation should report:
 
----
+- Macro and weighted F1
+- Per-category precision and recall
+- Confusion matrix
+- Performance on unseen merchants and wording
+- Confidence calibration
+- OCR-to-category error propagation
 
-## 🛠️ Technologies Used
+The README intentionally does not claim production accuracy until reproducible external evaluation artifacts are included.
 
-- Python 3, Flask
-- Tesseract OCR (pytesseract)
-- HuggingFace Transformers (BERT)
-- Pandas, NumPy
-- Chart.js, Bootstrap 5
-- PostgreSQL (psycopg2)
+## Data and security considerations
 
----
+- Use synthetic or appropriately sanitized financial documents for demonstrations.
+- Do not commit uploaded statements, database dumps, credentials, or trained artifacts containing sensitive data.
+- Apply file-size, extension, and content validation before deployment.
+- Protect production endpoints with authentication, authorization, CSRF controls, encryption, and audit logging.
+- Review OCR and classification outputs before relying on extracted financial values.
 
-## ✨ Customization & Extensibility
+## Current limitations
 
-- Add more training data in `app/nlp_model.py` to improve category prediction.
-- Adjust UI in `app/templates/` for branding or new features.
-- Extend dashboard with new charts, analytics, or export options.
-- Integrate user authentication for multi-user support.
+- Training examples are curated within the codebase.
+- Formal external classification and OCR benchmarks are not yet included.
+- Automated tests and containerized deployment are planned.
+- The application is a portfolio engineering project, not financial advice or production accounting software.
 
----
+## Roadmap
 
-## 🤝 Contributing
+- Add labeled evaluation fixtures and reproducible metric reports
+- Add unit tests for parsing, normalization, and database operations
+- Add Docker Compose for Flask and PostgreSQL
+- Add confidence-aware human review
+- Add schema migrations and role-based access controls
+- Add document-level provenance and extraction confidence
 
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+## Author
 
----
-
-## 📄 License
-
-MIT License
-
----
-
-*Created by Purnendu Kale.*
+**Purnendu Kale**  
+[LinkedIn](https://www.linkedin.com/in/purnendukale/) · [GitHub](https://github.com/ipurnendu26)
