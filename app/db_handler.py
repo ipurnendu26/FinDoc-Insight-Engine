@@ -1,14 +1,16 @@
 # app/db_handler.py
+import os
+
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
 
 DB_CONFIG = {
-    "dbname": "finance_db",
-    "user": "postgres",
-    "password": "",  # the one you used with psql
-    "host": "localhost",
-    "port": 5432
+    "dbname": os.getenv("POSTGRES_DB", "finance_db"),
+    "user": os.getenv("POSTGRES_USER", "postgres"),
+    "password": os.getenv("POSTGRES_PASSWORD", ""),
+    "host": os.getenv("POSTGRES_HOST", "localhost"),
+    "port": int(os.getenv("POSTGRES_PORT", "5432")),
 }
 
 
